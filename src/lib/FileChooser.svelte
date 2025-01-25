@@ -1,6 +1,7 @@
 <script lang="ts">
     let {
-        bitmap = $bindable()
+        bitmap = $bindable(),
+        hidden,
     } = $props();
 
     let files = $state<FileList>();
@@ -35,25 +36,57 @@
             bindFile(e.dataTransfer.files[0]);
         }
     }
+    function onDragEnd() {
+        console.log('dragend');
+        inDrag = false;
+    }
 </script>
-<div class="file-chooser"
-    class:in-drag={inDrag}
+<svelte:window
     ondrop={onDrop}
-    ondragover={onDragover}>
-    <input type="file" bind:files={files} />
+    ondragover={onDragover}
+    onpointerout={onDragEnd}
+    ondragend={onDragEnd}/>
+<div class="file-chooser" class:in-drag={inDrag} class:hidden={hidden}>
+    <div class="border">
+        <div class="text">
+            Drop the image here
+            <span class:hidden={hidden}>or select with <input type="file" bind:files={files} title="select"/></span>
+        </div>
+    </div>
 </div>
 <style>
     .file-chooser {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        border: 3px dashed gray;
-        box-sizing: border-box;
-        margin: 2em;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 2em;
+        background: #fff;
+    }
+    .hidden {
+        visibility: hidden;
     }
 
     .in-drag {
+        visibility: visible;
+        z-index: 1;
+    }
+
+    .border {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border: 3px dashed gray;
+        box-sizing: border-box;
+        height: 100%;
+    }
+    .text {
+        width: 15em;
+        text-align: left;
+    }
+    .in-drag .border {
         animation: blink 1s infinite;
     }
 

@@ -6,11 +6,13 @@
 </script>
 
 <main>
+    <FileChooser
+        bind:bitmap={bitmap}
+        hidden={!!bitmap}/>
     {#if bitmap}
         <Canvas bitmap={bitmap}/>
-    {:else}
-        <FileChooser bind:bitmap={bitmap}/>
     {/if}
+
 </main>
 
 <style>
