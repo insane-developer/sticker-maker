@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { Coords } from "./Dragable.svelte";
+    import type { Coords } from "./Draggable.svelte";
 
     let {
         zoom,
@@ -13,7 +13,6 @@
         onclose: () => void;
     } = $props();
 
-    let upscale = $state(false);
     let borderWidth = $state(10);
     let borderRadius = $state(10);
 
@@ -24,7 +23,7 @@
         height,
     } = coords;
     let ctx: CanvasRenderingContext2D|null = $state(null);
-    // let scaleFactor = $state(1);
+    let scaleFactor = $state(1);
     let canvas: HTMLCanvasElement;
     let patternCanvas = document.createElement('canvas');
     let fill: CanvasPattern | null = $state(null);
@@ -41,13 +40,14 @@
         if (!bitmap) {
             return;
         }
-        // let factor = 500 / Math.max(width, height);
-        // console.log(factor);
-        // scaleFactor = upscale ? factor : Math.min(1, factor);
-        patternCanvas.width = width;
-        patternCanvas.height = height;
+        let factor = 500 / Math.max(width, height);
+        scaleFactor = Math.min(1, factor);
+        const scaledWidth = scaleFactor * width;
+        const scaledHeight = scaleFactor * height;
+        patternCanvas.width = scaledWidth;
+        patternCanvas.height = scaledHeight;
 
-        patternContext?.drawImage(bitmap, left, top, width, height, 0, 0, width, height);
+        patternContext?.drawImage(bitmap, left, top, width, height, 0, 0, scaledWidth, scaledHeight);
         fill = ctx?.createPattern(patternCanvas, "no-repeat") || null;
     });
 
@@ -56,25 +56,33 @@
         if (!bitmap) {
             return;
         }
-        console.log('got', bitmap, coords);
-        canvas.width = width;
-        canvas.height = height;
+
+        canvas.width = scaleFactor * width;
+        canvas.height = scaleFactor * height;
         if (!ctx || !fill) {
             return;
         }
+        const scaledBorderWidth = borderWidth / scaleFactor | 0;
+        const scaledBorderRadius = borderRadius / scaleFactor;
 
         ctx.beginPath();
         ctx.fillStyle = fill;
-        ctx.lineWidth = borderWidth;
-        ctx.strokeStyle = '#ffff';
-        ctx.roundRect(borderWidth / 2, borderWidth / 2, width - borderWidth, height - borderWidth, borderRadius);
+        ctx.lineWidth = scaledBorderWidth;
+        ctx.strokeStyle = '#fff';
+
+        ctx.roundRect(scaledBorderWidth / 2, scaledBorderWidth / 2, scaleFactor * width - scaledBorderWidth, scaleFactor * height - scaledBorderWidth, scaledBorderRadius);
         ctx.stroke();
         ctx.fill();
         ctx.closePath();
     });
 
     function save() {
-
+        const img = canvas.toDataURL('image/png');
+        const a = document.createElement('a');
+        a.target='_blank';
+        a.download = `sticker-${new Date().toISOString()}.png`;
+        a.href = img;
+        a.click();
     }
     function close() {
         console.log('close');
@@ -87,20 +95,17 @@
     style:top={`${top*zoom}px`}
     style:left={`${left*zoom}px`}
     >
-    <button class="close" aria-label="close" onclick={close}>x</button>
-    <canvas class="canvas" bind:this={canvas}>
+    <button class="close" aria-label="close" onclick={close}></button>
+    <canvas class="canvas" class:upscale={Math.max(width, height) < 500} bind:this={canvas}>
     </canvas>
     <div class="controls">
         <div>
-            <label for="upscale"><input type="checkbox" bind:checked={upscale} name="upscale"/>upscale</label>
-        </div>
-        <div>
             <label class="over" for="border">border width</label>
-            <input type="range" bind:value={borderWidth} min="0" max="{Math.min(width,height)/4}" name="border"/><input bind:value={borderWidth}/>
+            <input type="range" bind:value={borderWidth} min="0" max="{scaleFactor*Math.min(width,height)/4}" name="border"/><input bind:value={borderWidth}/>
         </div>
         <div>
             <label class="over" for="corners">border radius</label>
-            <input type="range" bind:value={borderRadius} min="0" max="{Math.min(width,height)/2 - borderWidth/2}" name="corners"/><input bind:value={borderRadius}/>
+            <input type="range" bind:value={borderRadius} min="0" max="{scaleFactor*Math.min(width,height)/2 - borderWidth/2}" name="corners"/><input bind:value={borderRadius}/>
         </div>
         <div>
             <button onclick={save}>save</button>
@@ -120,20 +125,22 @@
     }
     .close {
         position: absolute;
-        right: .5em;
-        top: .5em;
+        right: 1em;
+        top: 1em;
         padding: 0.5em;
         border: none;
-        background: none;
+        background: url(../assets/cross.svg) 50% 50%/contain no-repeat;
     }
+
     .canvas {
         width: 100%;
         max-width: var(--width);
     }
-    input[type="checkbox"] {
-        margin-left: 0;
-    }
+
     label.over {
         display: block;
+    }
+    button {
+        margin-top: 0.5em;
     }
 </style>

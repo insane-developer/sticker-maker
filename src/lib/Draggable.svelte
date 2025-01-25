@@ -73,9 +73,9 @@ export interface Coords {
     onpointerdown={pointerdown}
     onpointermove={isSelecting ? selecting : isDragging ? dragging : null}
     onpointerup={pointerup}/>
-<div class="dragable-area" bind:this={areaElem}>
+<div class="draggable-area" bind:this={areaElem}>
     {#if width && height}
-        <div class="dragable"
+        <div class="draggable"
             bind:this={draggableElem}
             class:inactive={isSelecting}
             class:clear={isDragging}
@@ -94,30 +94,57 @@ export interface Coords {
     {/if}
 </div>
 <style>
-.dragable-area {
+.draggable-area {
     position: absolute;
     left: 0;
     right: 0;
     top: 0;
     bottom: 0;
 }
-.dragable {
+.draggable {
     position: absolute;
     border: 1px dashed #afa;
     background: rgba(0,128,0, 0.1);
     color: #afa;
+    text-shadow: 0 0 5px rgba(0,0,0,0.5);
     text-align: center;
     overflow: visible;
 }
-.dragable:hover .button {
+
+.draggable:hover {
+    cursor: grab;
+}
+
+.button {
+    position: absolute;
     display: block;
-    position:absolute;
-    bottom: 50%;
+    bottom: 40%;
     right: 0;
     left: 0;
     margin: auto;
+    width: 40%;
+    height: 3em;
+    min-width: 3em;
+    max-width: 10em;
+
+    border: 1px #afa dashed;
+    border-radius: 5px;
+    background: rgba(170, 255, 170, 0);
+
+    color: inherit;
+    text-shadow: 0 0 5px rgba(0,0,0,0.5);
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
-.button, .dragable.clear .button {
+
+.draggable:hover .button {
+    display: block;
+}
+.button:hover {
+    background: rgba(170, 255, 170, 0.1);
+}
+
+.button, .draggable.clear .button {
     display: none;
 }
 .inactive {

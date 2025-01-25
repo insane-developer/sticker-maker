@@ -1,5 +1,5 @@
 <script lang="ts">
-    import Dragable, { type Coords } from './Dragable.svelte';
+    import Draggable, { type Coords } from './Draggable.svelte';
     import StylePopup from './StylePopup.svelte';
     let canvas: HTMLCanvasElement;
     let root: HTMLDivElement;
@@ -75,31 +75,13 @@
                 {bitmap}
             />
         {:else}
-            <Dragable
+            <Draggable
                 {zoom}
                 coords={croppedCoords}
                 cutCallback={cut}/>
         {/if}
-        <!-- {#if croppedPart}
-            <StylePopup
-                top={cropTop}
-                left={cropLeft}
-                width={cropWidth}
-                height={cropHeight}
-                coords={croppedCoords}
-                bind:image={croppedPart}
-            />
-        {:else}
-            <Dragable
-                zoom={zoom}
-                bind:left={cropLeft}
-                bind:top={cropTop}
-                bind:width={cropWidth}
-                bind:height={cropHeight}
-                cutCallback={cut}/>
-        {/if} -->
     </div>
-    <span class="zoom">{zoom.toPrecision(2)}</span>
+    <button class="zoom" onclick={() => {zoom = 1}} title="Reset to 100%">{(100*zoom).toFixed(0)}%</button>
 </div>
 <style>
     .root {
@@ -122,13 +104,15 @@
         box-shadow: 0 0 3em rgba(0,0,0,0.5), inset 0 0 3em rgba(0,0,0,0.5);
     }
 
-    .select {
-        position: absolute;
-        border: 1px dashed #fff;
-    }
     .zoom {
         position: absolute;
         right: 1em;
         bottom: 1em;
+        background: rgba(194, 194, 194, 0.5);
+        display: block;
+        border: none;
+        border-radius: 0.5em;
+        padding: 0.2em 0.5em;
+        font-size: inherit;
     }
 </style>
