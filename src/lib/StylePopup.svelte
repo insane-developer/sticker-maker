@@ -24,7 +24,15 @@
         height,
     } = coords;
     let ctx: CanvasRenderingContext2D|null = $state(null);
+    // let scaleFactor = $state(1);
     let canvas: HTMLCanvasElement;
+    let patternCanvas = document.createElement('canvas');
+    let fill: CanvasPattern | null = $state(null);
+    const patternContext = patternCanvas.getContext("2d");
+    if (!patternContext) {
+        throw new Error('Cannot get canvas context');
+    }
+
     $effect(() => {
 		ctx = canvas.getContext('2d');
     });
@@ -33,10 +41,36 @@
         if (!bitmap) {
             return;
         }
+        // let factor = 500 / Math.max(width, height);
+        // console.log(factor);
+        // scaleFactor = upscale ? factor : Math.min(1, factor);
+        patternCanvas.width = width;
+        patternCanvas.height = height;
+
+        patternContext?.drawImage(bitmap, left, top, width, height, 0, 0, width, height);
+        fill = ctx?.createPattern(patternCanvas, "no-repeat") || null;
+    });
+
+
+    $effect(() => {
+        if (!bitmap) {
+            return;
+        }
         console.log('got', bitmap, coords);
         canvas.width = width;
         canvas.height = height;
-        ctx?.drawImage(bitmap, left, top, width, height, 0, 0, width, height);
+        if (!ctx || !fill) {
+            return;
+        }
+
+        ctx.beginPath();
+        ctx.fillStyle = fill;
+        ctx.lineWidth = borderWidth;
+        ctx.strokeStyle = '#ffff';
+        ctx.roundRect(borderWidth / 2, borderWidth / 2, width - borderWidth, height - borderWidth, borderRadius);
+        ctx.stroke();
+        ctx.fill();
+        ctx.closePath();
     });
 
     function save() {
@@ -61,12 +95,12 @@
             <label for="upscale"><input type="checkbox" bind:checked={upscale} name="upscale"/>upscale</label>
         </div>
         <div>
-            <label class="over" for="border">border width {borderWidth}</label>
-            <input type="range" bind:value={borderWidth} min="0" max="20" name="border"/>
+            <label class="over" for="border">border width</label>
+            <input type="range" bind:value={borderWidth} min="0" max="{Math.min(width,height)/4}" name="border"/><input bind:value={borderWidth}/>
         </div>
         <div>
-            <label class="over" for="corners">border radius {borderRadius}</label>
-            <input type="range" bind:value={borderRadius} min="0" max="20" name="corners"/>
+            <label class="over" for="corners">border radius</label>
+            <input type="range" bind:value={borderRadius} min="0" max="{Math.min(width,height)/2 - borderWidth/2}" name="corners"/><input bind:value={borderRadius}/>
         </div>
         <div>
             <button onclick={save}>save</button>
