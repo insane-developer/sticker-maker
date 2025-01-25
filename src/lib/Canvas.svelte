@@ -1,5 +1,6 @@
 <script lang="ts">
-    import Draggable, { type Coords } from './Draggable.svelte';
+    import type { Coords } from './constants';
+    import Draggable from './Draggable.svelte';
     import StylePopup from './StylePopup.svelte';
     let canvas: HTMLCanvasElement;
     let root: HTMLDivElement;

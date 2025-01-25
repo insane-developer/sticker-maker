@@ -1,17 +1,14 @@
-<script lang="ts" module>
-
-export interface Coords {
-    left: number;
-    top: number;
-    width: number;
-    height: number;
-}
-</script>
 <script lang="ts">
+    import { MAX_STICKER_SIZE, type Coords } from "./constants";
+
     let {
         zoom = 1,
         cutCallback,
         coords,
+    }: {
+        zoom: number;
+        cutCallback: () => void;
+        coords: Coords;
     } = $props();
     let left = $state(coords?.left || 0);
     let top = $state(coords?.top || 0);
@@ -86,8 +83,8 @@ export interface Coords {
         >
             <button class="button" onclick={cut}>cut</button>
             {(width).toFixed(0)}x{(height).toFixed(0)}
-            {#if width > 500 || height > 500}
-                {@const factor=500 / Math.max(width, height)}
+            {#if Math.max(width, height) > MAX_STICKER_SIZE}
+                {@const factor = MAX_STICKER_SIZE / Math.max(width, height)}
                 <span class="downscale-warning">will be downscaled to {(width * factor).toFixed(0)}x{(height * factor).toFixed(0)}</span>
             {/if}
         </div>

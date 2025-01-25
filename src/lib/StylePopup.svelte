@@ -1,5 +1,6 @@
 <script lang="ts">
-    import type { Coords } from "./Draggable.svelte";
+    import { MAX_STICKER_SIZE } from "./constants";
+    import type { Coords } from "./constants";
 
     let {
         zoom,
@@ -40,7 +41,7 @@
         if (!bitmap) {
             return;
         }
-        let factor = 500 / Math.max(width, height);
+        let factor = MAX_STICKER_SIZE / Math.max(width, height);
         scaleFactor = Math.min(1, factor);
         const scaledWidth = scaleFactor * width;
         const scaledHeight = scaleFactor * height;
@@ -96,7 +97,7 @@
     style:left={`${left*zoom}px`}
     >
     <button class="close" aria-label="close" onclick={close}></button>
-    <canvas class="canvas" class:upscale={Math.max(width, height) < 500} bind:this={canvas}>
+    <canvas class="canvas" class:upscale={Math.max(width, height) < MAX_STICKER_SIZE} bind:this={canvas}>
     </canvas>
     <div class="controls">
         <div>
