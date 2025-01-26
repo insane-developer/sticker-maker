@@ -96,9 +96,9 @@
 }
 .draggable {
     position: absolute;
-    border: 1px dashed #afa;
-    background: rgba(0,128,0, 0.1);
-    color: #afa;
+    border: 1px dashed rgb(206, 206, 206);
+    background: rgba(255,255,255, 0.1);
+    color: #d6d6d6;
     text-shadow: 0 0 5px rgba(0,0,0,0.5);
     text-align: center;
     overflow: visible;
@@ -120,9 +120,9 @@
     min-width: 3em;
     max-width: 10em;
 
-    border: 1px #afa dashed;
+    border: 1px #d6d6d6 dashed;
     border-radius: 5px;
-    background: rgba(170, 255, 170, 0);
+    background: rgba(255, 255, 255, 0);
 
     color: inherit;
     text-shadow: 0 0 5px rgba(0,0,0,0.5);
@@ -134,7 +134,7 @@
     display: block;
 }
 .button:hover {
-    background: rgba(170, 255, 170, 0.1);
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .button, .draggable.clear .button {
