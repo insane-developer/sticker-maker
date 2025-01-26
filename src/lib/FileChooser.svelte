@@ -1,10 +1,11 @@
 <script lang="ts">
+    import UploadButton from './UploadButton.svelte';
     let {
         bitmap = $bindable(),
         hidden,
     } = $props();
 
-    let files = $state<FileList>();
+    let files = $state<FileList>(new DataTransfer().files);
     let inDrag = $state(false);
 
     $effect(() => {
@@ -50,7 +51,9 @@
     <div class="border">
         <div class="text">
             Drop the image here
-            <span class:hidden={hidden}>or select with <input type="file" bind:files={files} title="select"/></span>
+            <span class:hidden={hidden}>or
+                <UploadButton bind:files={files} text="select file"/>
+            </span>
         </div>
     </div>
 </div>
@@ -83,7 +86,7 @@
         height: 100%;
     }
     .text {
-        width: 15em;
+        width: 10em;
         text-align: left;
     }
     .in-drag .border {
