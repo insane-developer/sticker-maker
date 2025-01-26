@@ -17,7 +17,7 @@
 
     let borderWidth = $state(10);
     let borderRadius = $state(10);
-    let borderColor = $state('#fff');
+    let borderColor = $state('#ffffff');
 
     const {
         left,
@@ -74,6 +74,7 @@
         ctx.strokeStyle = borderColor;
 
         ctx.roundRect(scaledBorderWidth / 2, scaledBorderWidth / 2, scaleFactor * width - scaledBorderWidth, scaleFactor * height - scaledBorderWidth, scaledBorderRadius);
+
         ctx.stroke();
         ctx.fill();
         ctx.closePath();
@@ -87,10 +88,7 @@
         a.href = img;
         a.click();
     }
-    function close() {
-        console.log('close');
-        onclose();
-    }
+
 </script>
 <div
     class="style-popup"
@@ -98,8 +96,8 @@
     style:top={`${top*zoom}px`}
     style:left={`${left*zoom}px`}
     >
-    <button class="close" aria-label="close" onclick={close}></button>
-    <canvas class="canvas" class:upscale={Math.max(width, height) < MAX_STICKER_SIZE} bind:this={canvas}>
+    <button class="close" aria-label="close" onclick={onclose}></button>
+    <canvas class="canvas" bind:this={canvas}>
     </canvas>
     <div class="controls">
         <div class="group">

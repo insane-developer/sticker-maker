@@ -24,7 +24,6 @@
 
     $effect(() => {
         if (!bitmap) {
-            console.log('!bitmap');
             return;
         }
         canvas.width = width = bitmap.width;
@@ -44,7 +43,6 @@
     }
 
     function cut(dimensions: Coords) {
-        console.log('before cut', dimensions);
         croppedCoords = dimensions;
         showStylePopup = true;
     }
@@ -55,9 +53,8 @@
         }
         e.preventDefault();
         const delta = e.deltaY;
-        console.log();
+
         zoom *= Math.exp(-delta/1000);
-        console.log(delta, zoom);
     }
 </script>
 <div

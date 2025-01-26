@@ -7,7 +7,7 @@
         coords,
     }: {
         zoom: number;
-        cutCallback: () => void;
+        cutCallback: (coords: Coords) => void;
         coords: Coords;
     } = $props();
     let left = $state(coords?.left || 0);
@@ -23,7 +23,8 @@
     function pointerdown(e: PointerEvent) {
         if (e.target === draggableElem) {
             e.stopPropagation();
-            return dragStart();
+            isDragging = true;
+            return;
         }
         if (e.target !== areaElem) {
             return;
@@ -46,10 +47,6 @@
         isDragging = false;
     }
 
-    function dragStart() {
-        console.log('drag!');
-        isDragging = true;
-    }
     function dragging(e: PointerEvent) {
         left += e.movementX/zoom;
         top += e.movementY/zoom;
@@ -63,7 +60,6 @@
             height: height,
             width: width,
         });
-        console.log(left, top, width, height);
     }
 </script>
 <svelte:window

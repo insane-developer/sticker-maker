@@ -11,9 +11,6 @@
     function onclick() {
         fileInput?.click();
     }
-    $effect(() => {
-        console.log(files);
-    });
 </script>
 <input type="file" bind:this={fileInput} bind:files={files}/>
 <button onclick={onclick}>{text}</button>

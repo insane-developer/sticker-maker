@@ -17,8 +17,6 @@
     });
 
     function bindFile(file: File) {
-        console.log('file', file);
-
         window.createImageBitmap(file)
             .then(data => {
                 bitmap = data;
@@ -29,8 +27,6 @@
         inDrag = true;
     }
     function onDrop(e: DragEvent) {
-        console.log('drop');
-
         inDrag = false;
         e.preventDefault();
         if (e.dataTransfer !== null) {
@@ -38,7 +34,6 @@
         }
     }
     function onDragEnd() {
-        console.log('dragend');
         inDrag = false;
     }
 </script>
@@ -52,7 +47,7 @@
         <div class="text">
             Drop the image here
             <span class:hidden={hidden}>or
-                <UploadButton bind:files={files} text="select file"/>
+                <UploadButton bind:files={files} text="select image"/>
             </span>
         </div>
     </div>
@@ -104,9 +99,5 @@
         to {
             border-color: gray;
         }
-    }
-
-    input {
-        border: none;
     }
 </style>
