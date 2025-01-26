@@ -1,6 +1,7 @@
 <script lang="ts">
     import { MAX_STICKER_SIZE } from "./constants";
     import type { Coords } from "./constants";
+    import Range from './Range.svelte';
 
     let {
         zoom,
@@ -16,6 +17,7 @@
 
     let borderWidth = $state(10);
     let borderRadius = $state(10);
+    let borderColor = $state('#fff');
 
     const {
         left,
@@ -69,7 +71,7 @@
         ctx.beginPath();
         ctx.fillStyle = fill;
         ctx.lineWidth = scaledBorderWidth;
-        ctx.strokeStyle = '#fff';
+        ctx.strokeStyle = borderColor;
 
         ctx.roundRect(scaledBorderWidth / 2, scaledBorderWidth / 2, scaleFactor * width - scaledBorderWidth, scaleFactor * height - scaledBorderWidth, scaledBorderRadius);
         ctx.stroke();
@@ -100,15 +102,25 @@
     <canvas class="canvas" class:upscale={Math.max(width, height) < MAX_STICKER_SIZE} bind:this={canvas}>
     </canvas>
     <div class="controls">
-        <div>
+        <div class="group">
             <label class="over" for="border">border width</label>
-            <input type="range" bind:value={borderWidth} min="0" max="{scaleFactor*Math.min(width,height)/4}" name="border"/><input bind:value={borderWidth}/>
+            <Range bind:value={borderWidth}
+                min="0"
+                max={scaleFactor*Math.min(width,height)/4}
+                name="border"/>
         </div>
-        <div>
+        <div class="group">
             <label class="over" for="corners">border radius</label>
-            <input type="range" bind:value={borderRadius} min="0" max="{scaleFactor*Math.min(width,height)/2 - borderWidth/2}" name="corners"/><input bind:value={borderRadius}/>
+            <Range bind:value={borderRadius}
+                min="0"
+                max={scaleFactor*Math.min(width,height)/2 - borderWidth/2}
+                name="corners"/>
         </div>
-        <div>
+        <div class="group">
+            <label class="over" for="color">border color</label>
+            <input type="color" bind:value={borderColor} name="color"/>
+        </div>
+        <div class="group">
             <button onclick={save}>save</button>
         </div>
     </div>
@@ -117,8 +129,9 @@
     .style-popup {
         position: absolute;
         background: rgba(255,255,255,0.7);
-        border-radius: 2em;
+        backdrop-filter: blur(5px);
         box-shadow: 0 0 2em rgba(0,0,0,0.3);
+        border-radius: 2em;
         min-width: 10em;
         padding: 2em;
         margin: -2em;
@@ -143,5 +156,19 @@
     }
     button {
         margin-top: 0.5em;
+        font-size: inherit;
+    }
+    .group + .group {
+        margin-top: 0.5em;
+    }
+    .group + .group:before {
+        content: '';
+        display: block;
+        width: 80%;
+        margin: auto;
+        height: 1px;
+        border-radius: 1px;
+        background: rgba(255,255,255,0.5);
+        box-shadow: 0 2px 2px rgba(255,255,255,0.25);
     }
 </style>
