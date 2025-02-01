@@ -29,6 +29,7 @@
         if (e.target !== areaElem) {
             return;
         }
+
         left = e.offsetX/zoom;
         top = e.offsetY/zoom;
         width = height = 0;
@@ -130,14 +131,11 @@
     transition: background-color 0.3s;
 }
 
-.draggable:hover .button {
-    display: block;
-}
 .button:hover {
     background: rgba(255, 255, 255, 0.1);
 }
 
-.button, .draggable.clear .button {
+.draggable.clear .button {
     display: none;
 }
 .inactive {
@@ -146,6 +144,6 @@
 
 .downscale-warning {
     display: block;
-    color: rgb(233, 233, 79);
+    color: #e9e94f;
 }
 </style>

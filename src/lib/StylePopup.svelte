@@ -44,7 +44,7 @@
             return;
         }
         let factor = MAX_STICKER_SIZE / Math.max(width, height);
-        scaleFactor = Math.min(1, factor);
+        scaleFactor = factor;
         const scaledWidth = scaleFactor * width;
         const scaledHeight = scaleFactor * height;
         patternCanvas.width = scaledWidth;
@@ -100,6 +100,11 @@
     <canvas class="canvas" bind:this={canvas}>
     </canvas>
     <div class="controls">
+        {#if scaleFactor > 1}
+        <div class="info">Image will be upscaled to
+            {(scaleFactor*width).toFixed(0)}x{(scaleFactor*height).toFixed(0)}
+        </div>
+        {/if}
         <div class="group">
             <label class="over" for="border">border width</label>
             <Range bind:value={borderWidth}
@@ -168,5 +173,10 @@
         border-radius: 1px;
         background: rgba(255,255,255,0.5);
         box-shadow: 0 2px 2px rgba(255,255,255,0.25);
+    }
+    .info {
+        color: #fff900;
+        margin: 0.5em 0;
+        text-shadow: 0 0 2px #000;
     }
 </style>
